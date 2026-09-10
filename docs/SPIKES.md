@@ -233,11 +233,12 @@ applied, plus integration notes.
 **Outcome: GO.** Verified by driving the live page, not by assertion. Searching
 `chase.h.ai` selects exactly it and populates the panel with real values —
 232,975 followers, 0.53% engagement, gravity 1,227, T5 gas giant, degree 1,
-in-network following 161, verified. Tier filters are arithmetically correct:
-T5 off gives 896 = 1052 − 156, T6 off gives 855 = 1052 − 41, and both restore
-to 1052. A node with no follower count renders every derived field as
-"unknown" with the note "Follower count not collected — body sized from
-in-network links", rather than substituting zero.
+in-network following 161, verified. Tier filters are arithmetically correct
+against the final tier counts: T5 off gives 755 = 1052 − 297 and T6 off gives
+980 = 1052 − 72, and both restore to 1052. (The 980 figure is the one the
+screenshot run asserts.) A node with no follower count renders every derived
+field as "unknown" with the note "Follower count not collected — body sized
+from in-network links", rather than substituting zero.
 
 Integration is clean — one authoritative selection state, no console errors on
 load.
