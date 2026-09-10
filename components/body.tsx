@@ -10,6 +10,8 @@ export type BodyProps = {
   position: [number, number, number];
   radius: number;
   color: string;
+  /** 0..1 engagement glow. Engagement never affects SIZE — see lib/gravity. */
+  glow: number;
   selected: boolean;
   onSelect: (id: string) => void;
 };
@@ -21,7 +23,7 @@ export type BodyProps = {
  * from zooming — only from selection.
  */
 export const Body = forwardRef<THREE.Mesh, BodyProps>(function Body(
-  { id, tier, position, radius, color, selected, onSelect },
+  { id, tier, position, radius, color, glow, selected, onSelect },
   ref,
 ) {
   return (
@@ -36,7 +38,12 @@ export const Body = forwardRef<THREE.Mesh, BodyProps>(function Body(
         onSelect(id);
       }}
     >
-      <meshLambertMaterial flatShading color={selected ? "#4fb3c9" : color} />
+      <meshLambertMaterial
+        flatShading
+        color={selected ? "#4fb3c9" : color}
+        emissive={selected ? "#4fb3c9" : color}
+        emissiveIntensity={glow * 0.6}
+      />
     </mesh>
   );
 });
