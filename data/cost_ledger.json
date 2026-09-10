@@ -1,0 +1,146 @@
+[
+  {
+    "run_id": "rZO3DFebSwRKaUkQc",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "seed following list",
+    "items": 172,
+    "cost_usd": 0.16519999999999999,
+    "started_at": "2026-09-10T09:58:16.554Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "Llt7sRY3FfBCfF8f7",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "second-degree following of filatov.design",
+    "items": 5,
+    "cost_usd": 0,
+    "started_at": "2026-09-10T09:58:43.021Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "cgF6xXzjedbOtUbVc",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "second-degree following of justyn.ai",
+    "items": 200,
+    "cost_usd": 0.13999999999999999,
+    "started_at": "2026-09-10T09:59:24.514Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "rRwNgefMLEeeVAPmV",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "second-degree following of justyn.ai",
+    "items": 200,
+    "cost_usd": 0.1708,
+    "started_at": "2026-09-10T10:00:00.793Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "eY6n2K1ZGsCmeCBvL",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "second-degree following of chase.h.ai",
+    "items": 200,
+    "cost_usd": 0.21,
+    "started_at": "2026-09-10T10:02:57.630Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "rXQQzx4MivM2GGhP0",
+    "actor": "datadoping/instagram-following-scraper",
+    "purpose": "second-degree following of angus.sewell",
+    "items": 198,
+    "cost_usd": 0.2086,
+    "started_at": "2026-09-10T10:03:44.128Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "kNurs9MUh2k6x9BWb",
+    "actor": "figue/instagram-profile-scraper",
+    "purpose": "probe:count-actor",
+    "items": 5,
+    "cost_usd": 0.0069,
+    "started_at": "2026-09-10T10:11:45.401Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "PogwHQsgef5QygY6g",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "probe:count-actor",
+    "items": 5,
+    "cost_usd": 0.0054,
+    "started_at": "2026-09-10T10:12:21.821Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "gRtvgwgc2fUI5MA44",
+    "actor": "scraping_solutions/instagram-scraper-followers-following-no-cookies",
+    "purpose": "second-degree following of marc.kaz (round-2 edge actor)",
+    "items": 200,
+    "cost_usd": 0,
+    "started_at": "2026-09-10T10:14:57.848Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "KL0Ue3hAzX5T9nDuu",
+    "actor": "scraping_solutions/instagram-scraper-followers-following-no-cookies",
+    "purpose": "second-degree following of kerem.tech (round-2 edge actor)",
+    "items": 200,
+    "cost_usd": 0,
+    "started_at": "2026-09-10T10:15:44.336Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "CsgPRkhvZcm4s2Fm2",
+    "actor": "scraping_solutions/instagram-scraper-followers-following-no-cookies",
+    "purpose": "second-degree following of steven.builds (round-2 edge actor)",
+    "items": 84,
+    "cost_usd": 0,
+    "started_at": "2026-09-10T10:16:00.106Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "ifSAUxndvJ7Vd40pV",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for mapped nodes (584 requested; ABORTED at billing-cycle limit after 258 profiles completed; dataset recovered via free API read)",
+    "items": 258,
+    "cost_usd": 0.2848,
+    "started_at": "2026-09-10T10:16:00.494Z",
+    "status": "ABORTED"
+  },
+  {
+    "run_id": "8cI3ct8Nj1gjR0WxR",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for mapped nodes (127 profiles)",
+    "items": 127,
+    "cost_usd": 0.1363,
+    "started_at": "2026-09-10T10:52:02.924Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "if5LbUB5QAKW8sUFO",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for mapped nodes (200 profiles)",
+    "items": 200,
+    "cost_usd": 0.21660000000000001,
+    "started_at": "2026-09-10T11:33:20.951Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "B8pPmzRxFbWQf6li4",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for mapped nodes (200 profiles)",
+    "items": 200,
+    "cost_usd": 0.2199,
+    "started_at": "2026-09-10T11:42:54.592Z",
+    "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "nrKhZfT2uYG3cGz7b",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for mapped nodes (196 profiles)",
+    "items": 196,
+    "cost_usd": 0.21660000000000001,
+    "started_at": "2026-09-10T11:50:42.491Z",
+    "status": "SUCCEEDED"
+  }
+]
