@@ -76,6 +76,18 @@ export type Node = {
   tier: Tier | null;
   /** Shortest hop distance from the seed account. Seed itself is 0. */
   degree: number;
+  /**
+   * Hop distance from the seed following ONLY directed follow edges, or null
+   * when the node cannot be reached at all by chaining follows from the seed.
+   *
+   * This is the load-bearing distinction for the map: a node with a finite
+   * `degree` but a null `directed_degree` sits in the same network (it shares
+   * followees with the seed's neighbourhood) yet is not in the seed's own
+   * following orbit. It was found by expanding an account outside the seed's
+   * following list, so "degrees of separation from the seed" does not apply
+   * to it. Render it as a satellite, not as an inner-system member.
+   */
+  directed_degree: number | null;
   /** How many mapped nodes follow this one. */
   in_network_followers: number;
   /** How many mapped nodes this one follows. */
@@ -108,6 +120,8 @@ export type UniverseMeta = {
   run_ids: string[];
   /** Nodes whose follower count could not be collected. */
   unknown_followers: number;
+  /** Nodes not reachable from the seed by chaining directed follow edges. */
+  nodes_unreachable_from_seed: number;
   /** Free-form provenance notes (rate limits hit, dropped targets, …). */
   notes: string[];
 };
