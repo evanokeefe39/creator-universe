@@ -1,7 +1,7 @@
 {
   "meta": {
     "seed": "nick_saraev",
-    "collected_at": "2026-09-10T11:56:19.213Z",
+    "collected_at": "2026-09-10T12:16:25.461Z",
     "cost_usd": 1.9811,
     "run_ids": [
       "rZO3DFebSwRKaUkQc",
@@ -30,8 +30,8 @@
     "unknown_followers": 70,
     "nodes_unreachable_from_seed": 468,
     "notes": [
-      "engagement_rate computed as avg_likes/followers for 26 nodes from docs/research/datalake_creators.json (datalake z-score deliberately NOT used)",
-      "profile details (coderx) cover the deterministic top slice; uncovered follower counts may be filled from docs/research/datalake_creators.json (a paid observation always wins over the free join)",
+      "engagement_rate computed as avg_likes/followers for 8 of 1052 nodes from docs/research/datalake_creators.json (a usable ratio exists for 26 datalake handles; the rest are not in this graph. Datalake z-score deliberately NOT used)",
+      "follower counts from paid profile scrapes (coderx) over every public node; private accounts (is_private) are unscrapeable and remain null; any still-uncovered count may be filled from docs/research/datalake_creators.json (a paid observation always wins over the free join)",
       "BFS semantics: degree = shortest hop distance from nick_saraev over UNDIRECTED follow edges (seed = 0); directed_degree = same over DIRECTED follow edges only, null when the node is unreachable by chaining follows from the seed",
       "468 of 1052 nodes are unreachable from the seed via directed follow edges (external hubs marc.kaz, kerem.tech, steven.builds sit outside the seed's following list, so their discovered neighbours have no follow-path from the seed)",
       "followers filled from docs/research/datalake_creators.json (free, no Apify cost) for 0 node(s) the paid scrape left null",
