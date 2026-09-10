@@ -46,18 +46,31 @@ deduplicated node set with profile details for follower counts.
 **Output:** `data/universe.json` with ≥300 nodes and ≥400 edges, plus a cost
 ledger entry.
 
-**Outcome: GO (conditional on coverage).** The pipeline works end to end. 143
-distinct handles recovered from the seed's 172 paid rows; seven second-degree
-expansions completed; the artefact carries 1052 nodes and 1154 edges and passes
-every contract invariant. Private-account share 4.4%, so the retired blocking
-signal is replaced by list completeness, which holds. Total cost $1.33.
+**Outcome: GO.** The pipeline works end to end. 143 distinct handles recovered
+from the seed's 172 paid rows; seven second-degree expansions completed; the
+artefact carries 1052 nodes and 1154 edges and passes every contract invariant.
+Private-account share 4.4%, so the retired blocking signal is replaced by list
+completeness, which holds. Total cost $2.05 across 17 runs.
 
-Two honest caveats. First, follower coverage is 37.1% (390/1052): the first
-enrichment batch was cut off by the Apify cycle limit mid-run, and only the seed
-plus its 144 first-degree follows have since been covered — the 398-node outer
-shell (degree 4) is entirely unknown. Second, the graph is connected only
-undirected: BFS over directed follow edges from the seed reaches 584 of 1052
-nodes, because three expansion hubs sit outside the seed's own following list.
+Follower coverage is **1050/1052 (99.8%)**. The only two unknowns are
+`filatovdl` and `leevi.builds`, both deleted accounts — an honest hole, not a
+collection failure. Coverage was reached in three passes, and two of them were
+defective before they were corrected: the first was cut off by the Apify cycle
+limit mid-run, and its priority order had collapsed to alphabetical because
+every node tied at in-network degree 1, which left the seed itself without a
+follower count and its own follows at 3% covered. A second pass covered the
+seed and its first-degree orbit; the third covered every remaining node.
+
+Two corrections worth recording, both caught by checking claims against the raw
+data rather than trusting them. Private accounts were skipped as
+"unscrapeable" — false: Instagram publishes follower counts for private
+accounts, and our own paid rows prove it (13 rows carry both `private: true`
+and a numeric `followersCount`). Enriching them took coverage from 93.7% to
+99.8% for $0.07.
+
+Structural note: the graph is connected only undirected. BFS over directed
+follow edges from the seed reaches 584 of 1052 nodes, because three expansion
+hubs sit outside the seed's own following list.
 `meta.nodes_unreachable_from_seed` records the 468 satellites.
 
 Evidence: `docs/reports/spike1-collection.md`, `data/universe.json`,
@@ -271,10 +284,19 @@ What the spike actually asks — does this reveal a connection or an account a
 sorted follower list would not — needs a human who knows the niche to look at
 it. That call is the user's, not the pipeline's.
 
-Limitation that colours the judgement: 62.9% of nodes (662 of 1052) have no
-follower count, so the celestial classification is only meaningful inside the
-seed's first-degree orbit. The outer shell renders as unknown-tier bodies sized
-by in-network links — truthful, but it does thin the "solar system" reading.
+The limitation that blocks a clean verdict is NOT coverage — every node carries
+a follower count except two deleted accounts, so tiering applies across the
+whole map. It is **size encoding**. Body radius is driven by gravity
+(followers × engagement), and engagement exists for only 8 of 1052 nodes, so
+1044 nodes fall back to a near-constant radius derived from in-network links.
+The result inverts the picture: `mrbeast` (89.4M followers) renders at radius
+0.76 while `angus.sewell` (159k) renders at 2.62, and the largest bodies on
+screen are the eight accounts whose following lists were scraped, because the
+fallback rewards in-network following. Nothing currently encodes audience.
+
+That must be fixed before the visualisation can be judged as a discovery tool:
+size from `log10(followers)` (available for 99.8% of nodes) with engagement
+modulating within that band, rather than engagement gating size entirely.
 
 Evidence: the live page at `http://127.0.0.1:3111/` and
 `docs/reports/spike2-5-visual.md`.

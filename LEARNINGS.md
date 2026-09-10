@@ -13,6 +13,28 @@ Learned: <the root cause, not the symptom>
 Rule: <the standing rule this produces>
 ```
 
+## 2026-09-10 — Private status does not block a follower count
+
+Observed: 68 nodes were skipped as "unscrapeable" because the following-list
+payload flagged them `is_private`. That reasoning was written into the
+artefact's own provenance banner. Reading back the paid profile rows we already
+had disproved it: 13 rows carry BOTH `private: true` and a numeric
+`followersCount` (`annmarie_lh=1606`, `_bendara=339`, `_goetic_warlock_=459`).
+Instagram publishes the follower count for private accounts — private status
+blocks content, not the count. Enriching them took coverage from 93.7% to
+99.8% for $0.07.
+
+Learned: A capability limit asserted from one field's semantics is a guess
+until it is checked against data already in hand. `is_private` describes
+whether we can see someone's posts; it says nothing about whether a public
+follower count exists. The check was free — the counter-evidence was already
+sitting in rows we had paid for.
+
+Rule: Before writing "cannot be collected" into a provenance note or a plan,
+verify the limitation against rows already collected. A false rationale in an
+artefact's honesty banner is harder to dislodge later than an omission, because
+readers treat it as settled.
+
 ## 2026-09-10 — Apify following actors emit duplicate rows, and you pay per row
 
 Observed: The seed scrape of `nick_saraev` returned **172 rows** but only **143

@@ -162,7 +162,11 @@ const engagementApplied = [...nodeIds].filter((id) => engagement.has(id)).length
 notes.push(`engagement_rate computed as avg_likes/followers for ${engagementApplied} of ${nodeIds.size} nodes from docs/research/datalake_creators.json (a usable ratio exists for ${engagement.size} datalake handles; the rest are not in this graph. Datalake z-score deliberately NOT used)`);
 if (engagementOverflow > 0) notes.push(`${engagementOverflow} handle(s) had an avg_likes/followers ratio > 1 and were left null (see per-handle notes above)`);
 
-notes.push(`follower counts from paid profile scrapes (coderx) over every public node; private accounts (is_private) are unscrapeable and remain null; any still-uncovered count may be filled from docs/research/datalake_creators.json (a paid observation always wins over the free join)`);
+// NOTE: private status does NOT block a public follower count. Instagram shows
+// the count for private accounts, and our own paid rows prove it (13 rows carry
+// both private:true and a numeric followersCount). Private accounts are
+// therefore enriched like any other; do not "skip as unscrapeable".
+notes.push(`follower counts from paid profile scrapes (coderx) over every node in the graph, including private accounts — private status does not block a public follower count; any still-uncovered count may be filled from docs/research/datalake_creators.json (a paid observation always wins over the free join)`);
 notes.push(`BFS semantics: degree = shortest hop distance from ${SEED} over UNDIRECTED follow edges (seed = 0); directed_degree = same over DIRECTED follow edges only, null when the node is unreachable by chaining follows from the seed`);
 notes.push(`${nodeIds.size - directedDegree.size} of ${nodeIds.size} nodes are unreachable from the seed via directed follow edges (external hubs marc.kaz, kerem.tech, steven.builds sit outside the seed's following list, so their discovered neighbours have no follow-path from the seed)`);
 
