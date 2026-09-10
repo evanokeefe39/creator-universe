@@ -142,5 +142,14 @@
     "cost_usd": 0.21660000000000001,
     "started_at": "2026-09-10T11:50:42.491Z",
     "status": "SUCCEEDED"
+  },
+  {
+    "run_id": "WtKeSF8Q17igSrPvh",
+    "actor": "coderx/instagram-profile-scraper-bio-posts",
+    "purpose": "profile details for unknown public nodes (68 profiles)",
+    "items": 68,
+    "cost_usd": 0.06810000000000001,
+    "started_at": "2026-09-10T12:21:09.864Z",
+    "status": "SUCCEEDED"
   }
 ]

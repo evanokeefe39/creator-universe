@@ -4,18 +4,20 @@ Workstream A · 2026-09-10 · Repo: creator-universe
 
 ## BLUF
 
-**FINAL COVERAGE (2026-09-10, budget raised to $45):** full follower enrichment
-completed for every mapped node that is public and reachable. Coverage:
-**982/1052 (93.3%)** overall; among PUBLIC nodes **969/971 = 99.8%** — the 68
-private accounts stay `followers: null` (no scraper can read them) plus 2
-public handles that returned no row (`filatovdl`, `leevi.builds` — deleted,
-renamed, or now-private). Seed: nick_saraev = **669,462 followers, tier 5
-(Gas giant)**. Final enrichment cost: 3 coderx chunks (200+200+196 = 596
-requested, 596 rows returned, $0.6531 realized ≈ $0.0011/profile). Ledger
-total: **$1.9811 across 16 runs** — inside the original $2.50 spike cap.
-Graph rebuilt, validator green, `public/universe.json` byte-identical. The
-graph contract gained `directed_degree` and `meta.nodes_unreachable_from_seed`
-from a parallel task; regeneration preserves both.
+**FINAL COVERAGE (2026-09-10, budget raised to $45):** follower enrichment is
+complete across ALL mapped nodes: **1050/1052 = 99.8%**. Private accounts are
+enriched like any other — Instagram publishes the follower count for private
+accounts (13 of our own paid rows carry private:true AND a numeric count), so
+the earlier "skip private" instruction was reversed and 66 private accounts
+were covered. Only 2 public handles returned no row (`filatovdl`,
+`leevi.builds` — deleted, renamed, or now-nonexistent; recorded, not retried).
+Seed: nick_saraev = **669,462 followers, tier 5 (Gas giant)**. Final
+enrichment runs: inner-shell 127 ($0.1363), outer-shell 596 across 3 chunks
+($0.6531), last 68 ($0.0681). Ledger total: **$2.0492 across 17 runs** — inside
+the original $2.50 spike cap. Graph rebuilt, validator green,
+`public/universe.json` byte-identical. The graph contract gained
+`directed_degree` and `meta.nodes_unreachable_from_seed` from a parallel task;
+regeneration preserves both.
 
 **Conditionally GO.** The pipeline works end-to-end and the graph artefact is real:
 1,052 nodes, 1,154 edges, 1 connected component, all contract invariants green.

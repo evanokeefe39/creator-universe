@@ -328,16 +328,12 @@ async function run(): Promise<void> {
   const enriched = new Set(loadProfileRuns().flatMap((p) => p.items.map((i) => norm(i.username ?? ""))));
   const profileBudget = Math.min(await remainingUsd(), HARD_CAP_USD) / (1 + SAFETY_MARGIN);
   const nProfiles = Math.floor((profileBudget - PROFILE_RUN_START_USD) / PROFILE_ROW_USD);
-  // Private flag per node: from profile rows when present, else the observing
-  // following-row flags. Private accounts cannot be scraped — skip them.
-  const isPrivate = new Map<string, boolean>();
-  for (const h of allNodes) {
-    const probe = loadProfileRuns().flatMap((p) => p.items).find((i) => norm(i.username ?? "") === h);
-    isPrivate.set(h, probe ? (probe.private ?? false) : (observedPrivate(followingRuns, h) ?? false));
-  }
-  const unknownPublic = allNodes.filter((h) => !enriched.has(h) && !isPrivate.get(h));
-  const batch = unknownPublic.slice(0, Math.min(nProfiles, unknownPublic.length));
-  console.log(`\n[3/3] profile details: ${batch.length} to fetch (unknown public nodes; ${enriched.size} already enriched, private accounts skipped; ${allNodes.length} unique nodes total; budget allows $${profileBudget.toFixed(2)})`);
+  // Private status does NOT block a public follower count — our own paid rows
+  // prove it (13 rows carry private:true AND a numeric followersCount). Private
+  // accounts are enriched like any other; only already-covered handles skip.
+  const uncovered = allNodes.filter((h) => !enriched.has(h));
+  const batch = uncovered.slice(0, Math.min(nProfiles, uncovered.length));
+  console.log(`\n[3/3] profile details: ${batch.length} to fetch (${enriched.size} already enriched of ${allNodes.length} unique nodes; private accounts included — the count is public; budget allows $${profileBudget.toFixed(2)})`);
   console.log(`  chunks of 200`);
   for (let i = 0; i < batch.length; i += 200) {
     const chunk = batch.slice(i, i + 200);
@@ -351,13 +347,6 @@ async function run(): Promise<void> {
   }
   console.log(`ledger is authoritative for totals; session spend this run: $${spent.toFixed(4)}`);
   console.log(`next: bun run graph && bun run validate:universe`);
-}
-
-/** Best-known private flag from following rows for a handle. */
-function observedPrivate(followingRuns: FollowingRunFile[], h: string): boolean | null {
-  const rows = followingRuns.flatMap((r) => r.items).filter((i) => norm(i.username ?? "") === h);
-  if (rows.length === 0) return null;
-  return rows.some((r) => r.is_private === true);
 }
 
 // ---------------------------------------------------------------------------
