@@ -1,0 +1,16 @@
+# Normalise line endings: LF in the repository, LF on checkout everywhere.
+# Windows checkouts otherwise rewrite markdown and source into CRLF, producing
+# whole-file diffs on the first Linux CI run.
+* text=auto eol=lf
+
+# Binary artefacts must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Generated; must not be merged textually.
+bun.lock -diff
