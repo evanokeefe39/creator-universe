@@ -74,7 +74,7 @@ const ORBIT_BASE = 9;
 const ORBIT_MIN = 4;
 const ORBIT_MAX = 150;
 /** Radial spring gain pulling a node toward its own target orbit. */
-const ORBIT_STRENGTH = 0.22;
+const ORBIT_STRENGTH = 0.8;
 /** Minimum separation enforced between cluster centres before simulating. */
 const CLUSTER_SEPARATION = 150;
 const ANCHOR_RELAX_ITERATIONS = 240;
@@ -213,7 +213,10 @@ export function simulate(
       .strength(0.25))
     .force("charge", forceManyBody<SimNode>().strength(params.chargeStrength).distanceMax(400))
     .force("center", forceCenter<SimNode>(0, 0, 0).strength(params.centerStrength))
-    .force("collide", forceCollide<SimNode>((n) => 3 + n.mass * 2).iterations(2))
+    // Collision radius grows with mass but more gently than the orbit rule
+    // pulls: a steep mass term inflates a heavy body's exclusion zone and
+    // pushes it outward, which fights the very ordering the orbit encodes.
+    .force("collide", forceCollide<SimNode>((n) => 2 + n.mass * 1.2).iterations(2))
     // THE positional force. Each node is sprung toward ITS OWN cluster centre:
     // outward if it sits inside its target orbit, inward if beyond it. Nothing
     // is pulled toward the global origin — a single shared centre is precisely
@@ -277,7 +280,7 @@ export function simulate(
  * Cached layout: settle once, persist to localStorage keyed by a graph hash,
  * so a reload reproduces the identical arrangement without re-running.
  */
-const CACHE_PREFIX = "cu-layout-v2-";
+const CACHE_PREFIX = "cu-layout-v3-";
 
 export function graphHash(nodes: Node[], edges: Edge[]): string {
   const nodePart = nodes.map((n) => `${n.id}:${n.followers ?? "u"}:${n.cluster ?? ""}`).sort().join("|");

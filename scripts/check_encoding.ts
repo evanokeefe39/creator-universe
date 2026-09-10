@@ -30,6 +30,30 @@ function fail(msg: string): never {
   process.exit(1);
 }
 
+/** Spearman rank correlation. NaN when either series is constant. */
+function spearman(xs: number[], ys: number[]): number {
+  const rank = (a: number[]) => {
+    const order = a.map((v, i) => [v, i] as const).sort((p, q) => p[0] - q[0]);
+    const r = new Array<number>(a.length);
+    order.forEach(([, i], k) => { r[i] = k; });
+    return r;
+  };
+  const rx = rank(xs);
+  const ry = rank(ys);
+  const n = xs.length;
+  const mx = rx.reduce((a, b) => a + b, 0) / n;
+  const my = ry.reduce((a, b) => a + b, 0) / n;
+  let num = 0;
+  let dx = 0;
+  let dy = 0;
+  for (let i = 0; i < n; i++) {
+    num += (rx[i] - mx) * (ry[i] - my);
+    dx += (rx[i] - mx) ** 2;
+    dy += (ry[i] - my) ** 2;
+  }
+  return dx === 0 || dy === 0 ? Number.NaN : num / Math.sqrt(dx * dy);
+}
+
 const known = u.nodes.filter((n) => n.followers !== null);
 const unknown = u.nodes.filter((n) => n.followers === null);
 
@@ -111,6 +135,31 @@ for (let i = 0; i < centres.length; i++) {
 }
 if (coincident > 0) fail(`${coincident} cluster centre pair(s) coincide — clusters have collapsed onto one point`);
 
+// 6. THE ORBIT RULE: within a cluster, heavier bodies settle CLOSER to the
+//    centre than lighter ones — this is the "distance" encoding. Target radii
+//    are ordered by construction, but `forceCollide` inflates a heavy body's
+//    exclusion zone and `forceManyBody` is uniform, so the SETTLED ordering is
+//    not implied by the target ordering and has to be measured. Regression to
+//    watch for: raising collide's mass coefficient pushes heavy bodies outward
+//    and drives these correlations toward zero or positive.
+const orbitRhos: { key: string; n: number; rho: number }[] = [];
+for (const c of centres) {
+  const group = byCluster.get(c.key) ?? [];
+  const members = group.filter((n) => n.id !== c.dominant).map((n) => {
+    const p = positions.get(n.id) ?? [0, 0, 0];
+    return { mass: massOf(n), d: Math.hypot(p[0] - c.p[0], p[1] - c.p[1], p[2] - c.p[2]) };
+  });
+  if (members.length < 5) continue; // too few to rank meaningfully
+  orbitRhos.push({ key: c.key, n: members.length, rho: spearman(members.map((m) => m.mass), members.map((m) => m.d)) });
+}
+if (orbitRhos.length === 0) fail("no cluster had enough members to test the orbit rule");
+for (const o of orbitRhos) {
+  if (!Number.isFinite(o.rho)) fail(`cluster "${o.key}" has a constant mass or distance series — orbit rule is untestable`);
+  if (o.rho >= 0) fail(`cluster "${o.key}" rho(mass, distance) = ${o.rho.toFixed(3)}: heavier bodies are NOT settling nearer the centre`);
+}
+// Weakest = closest to zero, i.e. the least convincing cluster.
+const weakest = orbitRhos.reduce((a, b) => (a.rho > b.rho ? a : b));
+
 console.log(`OK: ${repoFile}`);
 console.log(`nodes with a known follower count: ${known.length} / ${u.nodes.length}`);
 console.log(`distinct radii:      ${radii.size} (across ${u.nodes.length} nodes)`);
@@ -124,6 +173,13 @@ console.log(`closest centre pair: ${closest} at ${minSeparation.toFixed(1)} unit
 for (const c of centres) {
   const r = Math.hypot(c.p[0], c.p[1], c.p[2]);
   console.log(`  ${c.key.padEnd(20)} dominant=${c.dominant.padEnd(20)} centre r=${r.toFixed(1)}`);
+}
+if (mrbeast && justyn) {
+  console.log(`orbital ordering (rho of mass vs settled distance, negative = heavy sits close):`);
+  for (const o of orbitRhos) {
+    console.log(`  ${o.key.padEnd(20)} n=${String(o.n).padStart(4)}  rho=${o.rho.toFixed(3)}`);
+  }
+  console.log(`  weakest cluster: ${weakest.key} at rho=${weakest.rho.toFixed(3)}`);
 }
 console.log(`mass range:          ${Math.min(...u.nodes.map(massOf)).toFixed(2)} .. ${Math.max(...u.nodes.map(massOf)).toFixed(2)}`);
 process.exit(0);
