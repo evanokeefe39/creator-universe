@@ -27,6 +27,8 @@ export type VisibleNode = {
   radius: number;
   color: string;
   priority: number;
+  /** 0..1 engagement glow; exactly 0 when engagement was never sampled. */
+  glow: number;
 };
 
 export type ClusterLabel = {
@@ -185,6 +187,7 @@ export function Scene({ visibleNodes, edges, positions, clusters, selectedId, on
             position={p}
             radius={v.radius}
             color={v.color}
+            glow={v.glow}
             selected={selectedId === v.id}
             onSelect={onSelect}
           />

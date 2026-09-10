@@ -79,6 +79,7 @@ export function DetailPanel({ node, onClose }: DetailPanelProps) {
         {field("Directed", node.directed_degree === null ? "unreachable (satellite)" : String(node.directed_degree))}
         {field("In-net followers", fmt(node.in_network_followers))}
         {field("In-net following", fmt(node.in_network_following))}
+        {field("Cluster", node.cluster ?? "unclustered")}
         {field("Sub-niche", node.sub_niche ?? "unknown")}
         {field(
           "Flags",

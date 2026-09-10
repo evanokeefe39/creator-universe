@@ -192,6 +192,12 @@ const nodes: Node[] = [...nodeIds].sort().map((id) => {
   // Paid scrape wins; the free datalake join only fills nulls.
   const followers = paid ?? freeFollowers.get(id) ?? null;
   if (paid === null && followers !== null) freeFollowerFills += 1;
+  // Cluster = the discovery hub this node was reached from. Sorted before
+  // picking, so the choice is deterministic regardless of scrape order. Null
+  // when the node has no hub: the seed itself, and list owners observed only
+  // as a source. Null means "its own singleton cluster", never "unclassified
+  // into an existing group".
+  const reachedFromIds = [...(reachedFrom.get(id) ?? new Set<string>())].sort();
   return {
     id,
     followers,
@@ -202,12 +208,14 @@ const nodes: Node[] = [...nodeIds].sort().map((id) => {
     in_network_followers: edges.filter((e) => e.target === id).length,
     in_network_following: edges.filter((e) => e.source === id).length,
     sub_niche: null,
+    cluster: reachedFromIds.length > 0 ? reachedFromIds[0] : null,
     is_verified: p ? (p.verified ?? false) : (obs?.is_verified ?? false),
     is_private: p ? (p.private ?? false) : (obs?.is_private ?? false),
-    reached_from: [...(reachedFrom.get(id) ?? new Set<string>())].sort(),
+    reached_from: reachedFromIds,
   };
 });
 
+notes.push(`cluster = the discovery hub a node was reached from (first of reached_from, sorted); null for the seed and for list owners reached from nowhere, which the layout treats as singleton clusters`);
 notes.push(`followers filled from docs/research/datalake_creators.json (free, no Apify cost) for ${freeFollowerFills} node(s) the paid scrape left null`);
 notes.push(`enrichment priority order (seed first, degree asc, in_network_followers desc, handle asc), head: ${enrichmentPriority.slice(0, 10).join(", ")}...`);
 

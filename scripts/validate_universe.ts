@@ -4,7 +4,7 @@
  *
  * Usage: bun run validate:universe [-- --file data/universe.json]
  */
-import { tierForFollowers, type Universe } from "../lib/types";
+import { tierForFollowers, type Node, type Universe } from "../lib/types";
 import * as fs from "node:fs";
 
 const fileArgIdx = process.argv.indexOf("--file");
@@ -39,6 +39,16 @@ for (const n of u.nodes) {
   if (ids.has(n.id)) fail(`duplicate node id: "${n.id}"`);
   ids.add(n.id);
   if (n.tier !== tierForFollowers(n.followers)) fail(`node "${n.id}" tier ${n.tier} disagrees with tierForFollowers(${n.followers})`);
+  // `cluster` drives locality in the layout, so a missing or malformed value
+  // silently collapses the map into one blob rather than failing.
+  if ((n as Partial<Node>).cluster === undefined) fail(`node "${n.id}" is missing the cluster field`);
+  if (n.cluster !== null && typeof n.cluster !== "string") fail(`node "${n.id}" cluster is neither a string nor null`);
+  if (typeof n.cluster === "string" && n.cluster.trim() === "") fail(`node "${n.id}" cluster is an empty string — use null for unclustered`);
+}
+
+// A non-null cluster names the discovery hub, which must itself be a node.
+for (const n of u.nodes) {
+  if (n.cluster !== null && !ids.has(n.cluster)) fail(`node "${n.id}" cluster "${n.cluster}" is not a node id`);
 }
 
 for (const e of u.edges) {
@@ -76,5 +86,6 @@ console.log(`nodes:               ${u.nodes.length}`);
 console.log(`edges:               ${u.edges.length}`);
 console.log(`unknown followers:   ${unknown} (${(frac * 100).toFixed(1)}%)`);
 console.log(`connected components: ${components.size}`);
+console.log(`clusters:            ${new Set(u.nodes.map((n) => n.cluster ?? "\u0000none")).size} (${u.nodes.filter((n) => n.cluster === null).length} unclustered)`);
 console.log(`cost_usd:            $${u.meta.cost_usd.toFixed(4)} across ${u.meta.run_ids.length} runs`);
 process.exit(0);

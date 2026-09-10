@@ -13,8 +13,8 @@ import {
   type LayoutResult,
   type LayoutParams,
 } from "@/lib/layout";
-import { bodyRadius, labelPriority } from "@/lib/gravity";
-import { colorForNiche, ACCENT, GREYS } from "@/lib/palette";
+import { bodyRadius, engagementGlow, labelPriority } from "@/lib/gravity";
+import { colorForCluster, ACCENT, GREYS } from "@/lib/palette";
 import { ZOOM_CLOSE_DISTANCE } from "@/lib/zoom";
 import { liveProjections } from "@/lib/scene-state";
 import { Scene, type ClusterLabel, type VisibleNode } from "./scene";
@@ -90,8 +90,9 @@ export function UniverseApp() {
         id: n.id,
         tier: n.tier ?? 3, // unknown-tier nodes still render; radius handles size
         radius: bodyRadius(n),
-        color: colorForNiche(n.sub_niche),
+        color: colorForCluster(n.cluster),
         priority: labelPriority(n),
+        glow: engagementGlow(n),
       }));
   }, [loaded, layout, hiddenTiers]);
 
@@ -101,28 +102,34 @@ export function UniverseApp() {
     return loaded.universe.edges.filter((e) => visible.has(e.source) && visible.has(e.target));
   }, [loaded, visibleNodes]);
 
+  // Each label names the cluster's DOMINANT body — the member the layout hung
+  // the centre on — and sits on that body, not on the cluster's mean position.
+  // The mean would drift toward the ring of satellites and label empty space.
   const clusters: ClusterLabel[] = useMemo(() => {
     if (!loaded || !layout) return [];
-    const groups = new Map<string, { count: number; sx: number; sy: number; sz: number }>();
+    const groups = new Map<string, { count: number; heaviest: string; heaviestFollowers: number }>();
     for (const v of visibleNodes) {
       const n = nodesById.get(v.id);
-      const key = n?.sub_niche ?? "unclassified";
-      const p = layout.positions.get(v.id) ?? [0, 0, 0];
-      const g = groups.get(key) ?? { count: 0, sx: 0, sy: 0, sz: 0 };
-      g.count++;
-      g.sx += p[0];
-      g.sy += p[1];
-      g.sz += p[2];
-      groups.set(key, g);
+      if (!n || n.cluster === null) continue;
+      const followers = n.followers ?? -1;
+      const g = groups.get(n.cluster);
+      if (!g) groups.set(n.cluster, { count: 1, heaviest: n.id, heaviestFollowers: followers });
+      else {
+        g.count++;
+        if (followers > g.heaviestFollowers) {
+          g.heaviest = n.id;
+          g.heaviestFollowers = followers;
+        }
+      }
     }
     const out: ClusterLabel[] = [];
     for (const [key, g] of groups) {
       if (g.count < 2) continue; // a cluster of exactly one member gets no phantom label
       out.push({
         key,
-        label: `${key} (${g.count})`,
+        label: `${g.heaviest} (${g.count})`,
         count: g.count,
-        center: [g.sx / g.count, g.sy / g.count, g.sz / g.count],
+        center: layout.positions.get(g.heaviest) ?? [0, 0, 0],
       });
     }
     return out;

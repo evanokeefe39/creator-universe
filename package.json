@@ -13,6 +13,7 @@
     "collect": "bun run scripts/collect.ts",
     "graph": "bun run scripts/build_graph.ts",
     "validate:universe": "bun run scripts/validate_universe.ts",
+    "check:encoding": "bun run scripts/check_encoding.ts",
     "apify:budget": "bun run scripts/apify_budget.ts"
   },
   "dependencies": {

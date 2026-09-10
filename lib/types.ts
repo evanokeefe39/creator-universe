@@ -11,9 +11,11 @@
  *     integrity; enforced by `scripts/validate_universe.ts`).
  *   - A numeric `followers` is a real observed count. `null` means NOT
  *     COLLECTED — never a placeholder for zero, and never estimated.
- *   - `tier` is derived from `followers` when known. When `followers` is
- *     `null`, `tier` is `null` and the node is rendered from in-network
- *     signals only.
+ *   - Body size and mass are a POWER LAW over `followers` (exponent 0.30), not
+ *     a logarithm: log10 compresses a 1000x follower gap to a 2x radius and
+ *     hides the hierarchy the map exists to show. `engagement_rate` is a
+ *     glow modifier where known, never a gate on size — gating on it inverted
+ *     the ordering for the 1044 nodes that lack it.
  */
 
 /** Celestial tier. 6 = star (1M+), 1 = asteroid (0–100). */
@@ -94,6 +96,17 @@ export type Node = {
   in_network_following: number;
   /** Sub-niche label, or null when unclassified. */
   sub_niche: string | null;
+  /**
+   * Grouping key for locality — the axis clusters are built on, and what
+   * decides which centre a node orbits.
+   *
+   * Today this is the discovery hub the node was reached from (the first of
+   * `reached_from`, sorted). When topic classification lands it becomes the
+   * topic label. Consumers MUST NOT assume it is a topic: it is an opaque
+   * grouping key. `null` means the node has no hub and forms its own
+   * singleton cluster, so the layout never drags it anywhere.
+   */
+  cluster: string | null;
   is_verified: boolean;
   is_private: boolean;
   /** In-network linkage to the seed(s) this node was reached from. */
